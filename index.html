@@ -1,0 +1,169 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SNIPER-X BIG/SMALL HACK</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Courier New', monospace;
+      background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+      color: #00ffcc;
+      text-align: center;
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #ff0040;
+      text-shadow: 0 0 10px #ff0040;
+    }
+    .quote {
+      margin-top: -10px;
+      font-size: 1rem;
+      color: #ffffffcc;
+      text-shadow: 0 0 8px #00ffff;
+      font-style: italic;
+    }
+    .input-section, .prediction-section, .history-section {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      padding: 1rem;
+      margin: 1rem auto;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 0 10px #00ffcc44;
+    }
+    label, input, select, button {
+      display: block;
+      width: 100%;
+      margin: 0.5rem 0;
+      font-size: 1rem;
+    }
+    input, select {
+      padding: 0.4rem;
+      border-radius: 5px;
+      border: none;
+      background-color: #222;
+      color: #0f0;
+    }
+    button {
+      background-color: #ff0040;
+      color: white;
+      font-weight: bold;
+      border: none;
+      padding: 0.6rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background-color: #e60039;
+    }
+    .glow {
+      text-shadow: 0 0 8px red, 0 0 12px #ff00ff;
+    }
+    .result-box {
+      font-size: 1.8rem;
+      color: #00ff00;
+      margin-top: 1rem;
+    }
+    .footer {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 2rem;
+    }
+    .tg-links a {
+      color: #00ffff;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="glow">CRACKER 1.0</h1>
+  <div class="quote">"Behind every hit, there’s a mind you can’t decode. - ARNAV 🔥"</div>  <div class="input-section">
+    <label>Current Period Number (Last 3 digits only):</label>
+    <input id="currentPeriod" type="number" placeholder="e.g., 865" />
+    <label>Enter Last 10 Result Digits (comma separated):</label>
+    <input id="lastResults" type="text" placeholder="e.g., 3,7,2,4,..." />
+    <button onclick="saveHistory()">Save History</button>
+  </div>  <div id="predictSection" class="prediction-section" style="display:none">
+    <div class="result-box" id="prediction"></div>
+    <button onclick="markHitOrMiss('hit')">✅ HIT</button>
+    <button onclick="markHitOrMiss('miss')">❌ MISS</button>
+    <div id="popup" style="display:none">
+      <label>What number appeared in current round?</label>
+      <input id="resultNumber" type="number" />
+      <button onclick="saveCurrentResult()">Add to History</button>
+    </div>
+  </div>  <div class="history-section">
+    <h3>Last 10 Results History:</h3>
+    <div id="historyDisplay">--</div>
+  </div>  <div class="footer">
+    <div class="tg-links">
+      <p>Profile: <a href="https://t.me/arnav_1100">@ARNAV_1100</a></p>
+      <p>Channel: <a href="https://t.me/+fKHabYVx_shkMDk1">Join Here</a></p>
+    </div>
+  </div>  <script>
+    let historyArr = [];
+    function saveHistory() {
+      const input = document.getElementById("lastResults").value.trim();
+      const parsed = input.split(",").map(n => parseInt(n.trim())).filter(n => !isNaN(n));
+      if (parsed.length === 10) {
+        historyArr = parsed;
+        document.getElementById("historyDisplay").innerText = historyArr.join(" → ");
+        document.querySelector(".input-section").style.display = "none";
+        document.getElementById("predictSection").style.display = "block";
+        makePrediction();
+      } else {
+        alert("Please enter exactly 10 numbers.");
+      }
+    }
+
+    function makePrediction() {
+      const freq = {};
+      historyArr.forEach(n => { freq[n] = (freq[n] || 0) + 1; });
+      let even = 0, odd = 0;
+      historyArr.forEach(n => (n % 2 === 0 ? even++ : odd++));
+
+      const lastDigitRule = {0:"BIG",1:"BIG",2:"SMALL",3:"SMALL",4:"SMALL",5:"BIG",6:"SMALL",7:"SMALL",8:"BIG",9:"BIG"};
+      const last = historyArr[historyArr.length - 1];
+      let bigScore = 0, smallScore = 0;
+
+      // Layer 1
+      lastDigitRule[last] === "BIG" ? bigScore++ : smallScore++;
+
+      // Layer 2: Streak
+      let streak = 1;
+      for (let i = historyArr.length - 2; i >= 0 && (historyArr[i] % 2 === last % 2); i--) streak++;
+      if (streak >= 3) (last % 2 === 0 ? smallScore++ : bigScore++);
+
+      // Layer 3: Odd Even
+      if (even > odd) bigScore++; else smallScore++;
+
+      // Layer 5: Frequency
+      let countBig = historyArr.filter(n => n % 2 === 0).length;
+      let countSmall = historyArr.length - countBig;
+      if (countBig < 4) bigScore++; if (countSmall < 4) smallScore++;
+
+      const finalPrediction = bigScore > smallScore ? "BIG" : "SMALL";
+      document.getElementById("prediction").innerText = `Prediction: ${finalPrediction}`;
+    }
+
+    function markHitOrMiss(status) {
+      document.getElementById("popup").style.display = "block";
+    }
+
+    function saveCurrentResult() {
+      const num = parseInt(document.getElementById("resultNumber").value);
+      if (!isNaN(num)) {
+        historyArr.push(num);
+        if (historyArr.length > 10) historyArr.shift();
+        document.getElementById("historyDisplay").innerText = historyArr.join(" → ");
+        document.getElementById("popup").style.display = "none";
+        makePrediction();
+      } else {
+        alert("Enter a valid number result!");
+      }
+    }
+  </script></body>
+</html>
